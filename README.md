@@ -1,117 +1,215 @@
-# 🛡️ Vanguard | Advanced Discord Moderation Ecosystem
+<div align="center">
 
-<div align="center">  
-  [![Discord Support](https://img.shields.io/badge/Discord-Support-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/3TJEacm6RD)
-  [![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge)](https://github.com/SEJED-DEV/Vanguard-discord-bot)
-  [![Node.JS](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-brightgreen?style=for-the-badge&logo=node.js)](https://nodejs.org/)
-  [![Discord.JS](https://img.shields.io/badge/Discord.js-v14-blue?style=for-the-badge&logo=discord)](https://discord.js.org/)
-  [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://github.com/SEJED-DEV/Vanguard-discord-bot/blob/main/LICENSE)
+# 🛡️ VANGUARD
+
+### *Advanced Discord Moderation Ecosystem*
+
+[![Discord](https://img.shields.io/badge/Discord-Support%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/3TJEacm6RD)
+[![Version](https://img.shields.io/badge/Version-1.0.0-blueviolet?style=for-the-badge)](https://github.com/SEJED-DEV/Vanguard-discord-bot/releases)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Discord.js](https://img.shields.io/badge/Discord.js-v14-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.js.org/)
+[![License](https://img.shields.io/badge/License-MIT-22c55e?style=for-the-badge)](https://github.com/SEJED-DEV/Vanguard-discord-bot/blob/main/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/SEJED-DEV/Vanguard-discord-bot?style=for-the-badge&color=f59e0b)](https://github.com/SEJED-DEV/Vanguard-discord-bot/stargazers)
+
+<br/>
+
+> *"Protecting your community, one command at a time."*
+
+<br/>
+
+**Vanguard** is a production-grade, self-hosted Discord moderation bot engineered from the ground up for stability, performance, and precision. Built on atomic SQLite transactions, a true LRU caching layer, and fail-safe interaction recovery — Vanguard eliminates race conditions and API phantom-actions that plague conventional bots.
+
 </div>
 
 ---
 
-## 💎 Overview
+## 📖 Table of Contents
 
-**Vanguard** is not just another moderation bot; it is a premium, high-performance community protection framework engineered specifically to prevent chaos with surgical precision. 
-
-Built on top of a blazing fast in-memory LRU caching system paired with atomic SQLite database transactions, Vanguard completely eliminates race conditions, API phantom-actions, and runtime errors to guarantee that your server's moderation trail is **always perfect, synchronized, and secure.**
-
-> "Protecting your community, one command at a time."
-
----
-
-## 🔥 Enterprise Architecture & Resilience
-
-Vanguard operates on a fundamentally different reliability layer than conventional bots.
-
-### 🛡️ Fail-Safe Moderation Synchronization ("DM-And-Fail" Protection)
-A notorious flaw in Discord bots is attempting to direct message an offender *before* punishing them, only for the subsequent punishment (like a ban) to fail due to missing hierarchical permissions—resulting in an unpunished user receiving a false ban alert. Vanguard enforces targeted absolute boolean checks (`PermissionFlagsBits`) completely independent of the standard execution path to ensure it 100% holds the required rights before initiating any external interactions.
-
-### ⚡ True Least-Recently-Used (LRU) Caching
-Vanguard does not read configurations from the disk for every user interaction. Everything is securely stored in a dynamic Javascript Map matrix utilizing a true LRU algorithm. If a server goes quiet, its local cache falls to the back of the eviction queue, ensuring zero memory bloat while optimizing your most active guilds.
-
-### 📊 Atomic Case Management Transactions
-Powered by `better-sqlite3`, every single punishment log handles database locks internally. Case numbers are assigned through an atomic subquery `(SELECT IFNULL(MAX(caseNumber), 0) + 1)`, meaning if 50 server raids occur on the same exact millisecond, every single case ID will be precisely sequential without race-condition collisions.
+- [✨ Features](#-features)
+- [🏗️ Architecture & Reliability](#️-architecture--reliability)
+- [💻 Command Reference](#-command-reference)
+- [📡 Installation](#-installation)
+- [🔑 Environment Variables](#-environment-variables)
+- [⚙️ In-Bot Configuration](#️-in-bot-configuration)
+- [🛠️ Diagnostics & Troubleshooting](#️-diagnostics--troubleshooting)
+- [🤝 Support](#-support)
+- [📄 License](#-license)
 
 ---
 
-## 📚 General Feature Offerings
+## ✨ Features
 
-- **🎨 Per-Guild Custom Branding:** Overwrite default emojis seamlessly with your own. Use `/config emojis` to set unique icons for success, error, ban, timeout, and warn operations.
-- **🔐 Multi-Layer Privacy:** Error and diagnostic operations are strictly isolated. Critical bot failures are routed selectively via Developer Privacy Guards to the support server, whereas actual guild infractions remain firmly inside that specific server's log channel.
-- **🚨 Advanced Error Recovery:** Rejections from expired interaction tokens or Discord API 500 Outages are natively intercepted through global nested `try/catch` fallbacks ensuring your bot *never* turns offline unexpectedly.
+<table>
+<tr>
+<td width="50%">
+
+**🔨 Complete Moderation Suite**
+Full slash command coverage for every moderation action — ban, kick, timeout, warn, unban, untimeout, and unwarn — all with pre-action DM notifications and instant case logging.
+
+</td>
+<td width="50%">
+
+**📋 Atomic Case Management**
+Every action is recorded atomically via `better-sqlite3` transactions. Case numbers are assigned via a subquery lock, preventing race conditions even under simultaneous high-volume moderation.
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**🎨 Per-Guild Custom Branding**
+Server admins can fully customise the bot's emoji set with their own custom Discord emojis. Use `/config emojis` to bind any emoji to the bot's UI elements.
+
+</td>
+<td width="50%">
+
+**⚡ True LRU Configuration Cache**
+Guild configurations are cached in-memory using a real Least-Recently-Used algorithm. Only cold, inactive servers are flushed — your busiest guilds stay loaded and fast.
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**🔐 Developer Privacy Layers**
+Internal diagnostics and error logs are transmitted exclusively to the developer's support server. Guild-level infractions never leave the target guild's log channel.
+
+</td>
+<td width="50%">
+
+**🚨 Battle-Tested Error Recovery**
+Global process-level handlers catch every unhandled rejection and exception. A nested fallback system ensures Discord outages never crash the process loop.
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**🛡️ DM-And-Fail Protection**
+Bot permissions are explicitly verified via `PermissionFlagsBits` *before* any DM is sent to a target. Eliminates the scenario where a user receives a false punishment DM.
+
+</td>
+<td width="50%">
+
+**⏱️ Per-Command Rate Limiting**
+Built-in global cooldown system with per-user, per-command timestamps. Owner bypass included. Prevents command spam and Discord API rate limit accumulation.
+
+</td>
+</tr>
+</table>
 
 ---
 
-## 💻 Full Command Registry
+## 🏗️ Architecture & Reliability
 
-Vanguard uses full Discord Application (Slash) Commands.
+```
+┌─────────────────────────────────────────────────────┐
+│                    VANGUARD CORE                     │
+├──────────────┬──────────────────┬───────────────────┤
+│  Entry Point │  Command Handler  │   Event Handler   │
+│  src/index.js│commandHandler.js  │ eventHandler.js   │
+├──────────────┴──────────────────┴───────────────────┤
+│                   Utility Layer                      │
+│   logger.js │ moderation.js │ permissions.js         │
+│   emojis.js │ system.js                              │
+├─────────────────────────────────────────────────────┤
+│                   Database Layer                     │
+│       better-sqlite3 │ LRU Config Cache              │
+│   Atomic Transactions │ Indexed Case Queries          │
+└─────────────────────────────────────────────────────┘
+```
 
-### 🔨 Moderation Protocol
-| Command | Description | Required Permissions |
-| --- | --- | --- |
-| `/ban [user] [reason]` | Permanently banishes a user from the guild | `Ban Members` |
-| `/unban [user] [reason]` | Revokes a permanent ban from a specific ID | `Ban Members` |
-| `/kick [user] [reason]` | Swiftly kicks an active user from the guild | `Kick Members` |
-| `/timeout [user] [duration] [reason]` | Restricts a user's communication (5s - 28d) | `Moderate Members` |
-| `/untimeout [user] [reason]` | Immediately removes a user from communication timeout | `Moderate Members` |
-| `/warn [user] [reason]` | Formally logs a warning into the user's permanent record | `Moderate Members` |
-| `/unwarn [user] [reason]` | Retracts a specific warning from the database log | `Moderate Members` |
-| `/logs [user]` | Fetches the comprehensive infraction history of an ID | `Moderate Members` |
+### Atomic Case Numbering
+Case IDs are assigned using an atomic SQL subquery that locks the row during assignment:
+```sql
+INSERT INTO cases (caseNumber, ...)
+VALUES ((SELECT IFNULL(MAX(caseNumber), 0) + 1 FROM cases WHERE guildId = ?), ...)
+```
+This means 100 simultaneous bans will still produce perfectly sequential case numbers.
 
-### ⚙️ Guild Configuration Management
-| Command | Description | Required Permissions |
-| --- | --- | --- |
-| `/config logs [channel]` | Routes all moderation embeds for that specific server to a designated channel | `Administrator` |
-| `/config emojis [key] [emoji]` | Maps a custom Discord Emoji (e.g. `<:check:1234>`) to overwrite default UI symbols | `Administrator` |
+### True LRU Cache
+The config cache uses a Map with delete-and-reinsert on read to maintain access order — the standard Map insertion order trick — rather than a naive FIFO that could evict active servers.
+
+### Boot Validation
+```js
+// Hard stop if critical env vars are missing
+if (!process.env.TOKEN || !process.env.CLIENT_ID) {
+    console.error('[CRITICAL-FATAL] Missing TOKEN or CLIENT_ID. Aborting.');
+    process.exit(1);
+}
+```
 
 ---
 
-## 📡 Full Setup & Installation
+## 💻 Command Reference
 
-Vanguard operates cleanly on modern Node.js environments.
+### 🔨 Moderation Commands
 
-### 🛠️ Prerequisites
-- **Node.js**: `v20.0.0` or higher.
-- **NPM Modules**: Built specifically around `discord.js v14` and Native Fetch (`undici`).
+| Command | Description | Permission Required |
+|---------|-------------|---------------------|
+| `/ban <user> [reason]` | Permanently ban a user. Sends a DM notification before execution. | `Ban Members` |
+| `/unban <user> [reason]` | Revoke a ban by user ID. Logs a case entry on success. | `Ban Members` |
+| `/kick <user> [reason]` | Remove a user from the server. DM is sent before kick. | `Kick Members` |
+| `/timeout <user> <duration> [reason]` | Mute a user for a set duration (5s–28d). Supports `10m`, `1h`, `1d` format. | `Moderate Members` |
+| `/untimeout <user> [reason]` | Immediately lift an active timeout. | `Moderate Members` |
+| `/warn <user> <reason>` | Issue a formal warning logged to the database. | `Moderate Members` |
+| `/unwarn <user> [reason]` | Remove a warning from a user's case history. | `Moderate Members` |
+| `/logs <user>` | Retrieve a user's full infraction history with timestamps and case numbers. | `Moderate Members` |
 
-### 📥 1. Cloning & Staging
-Pull the production codebase from the secure repository.
+### ⚙️ Configuration Commands
+
+| Command | Description | Permission Required |
+|---------|-------------|---------------------|
+| `/config logs <channel>` | Set the guild's local moderation log channel. | `Administrator` |
+| `/config emojis <key> <emoji>` | Map a custom emoji to a bot UI element (success, error, ban, kick, warn, timeout). | `Administrator` |
+
+### 🛠️ Utility & Owner Commands
+
+| Command | Description | Permission Required |
+|---------|-------------|---------------------|
+| `/status` | Display bot uptime, memory usage, and guild count. | None |
+| `/say <message>` | Make the bot send a message to a channel. | Bot Owner |
+| `/get-emojis` | List all emoji mappings configured for the current guild. | Bot Owner |
+
+---
+
+## 📡 Installation
+
+### Prerequisites
+- **Node.js** `v20.0.0` or higher — *required*
+- **npm** `v8+`
+- A Discord Application created at [discord.com/developers](https://discord.com/developers/applications)
+
+### Step 1 — Clone the Repository
 ```bash
 git clone https://github.com/SEJED-DEV/Vanguard-discord-bot.git
 cd Vanguard-discord-bot
 ```
 
-### 📦 2. Dependency Matrix
-Install the raw package modules.
+### Step 2 — Install Dependencies
 ```bash
 npm install
 ```
 
-### 🔑 3. Environment Population
-You must define your Discord Application Portal secrets. The bot will automatically **HALT** with a `[CRITICAL-FATAL]` log if these are missing to protect your runtime environment.
+### Step 3 — Configure Environment
 ```bash
+# Windows
+copy .env.example .env
+
+# macOS / Linux
 cp .env.example .env
 ```
-Populate your `.env` securely:
-```env
-# Application Core (REQUIRED)
-TOKEN="your_discord_bot_token_here"
-CLIENT_ID="your_bot_application_id_here"
 
-# Privacy & Logging Matrix
-OWNER_ID="your_discord_developer_id"
-SUPPORT_SERVER_ID="server_id_where_errors_log"
-```
+Then open `.env` and fill in your values (see [Environment Variables](#-environment-variables) below).
 
-### 🚀 4. Deployment & Boot Sequence
-For local development and testing:
+### Step 4 — Start the Bot
+
+**Development:**
 ```bash
 node src/index.js
 ```
 
-**For Production Environments (Recommended):**
-Do not run `node` natively in production. Utilize `pm2` for daemon clustering and crash redundancy.
+**Production (recommended with PM2):**
 ```bash
 npm install -g pm2
 pm2 start src/index.js --name "vanguard-bot"
@@ -121,41 +219,86 @@ pm2 startup
 
 ---
 
+## 🔑 Environment Variables
+
+All configuration is handled through your `.env` file. Copy `.env.example` as a starting point.
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `TOKEN` | ✅ Yes | — | Your Discord bot token from the Developer Portal |
+| `CLIENT_ID` | ✅ Yes | — | Your application's Client ID (used to register slash commands) |
+| `OWNER_ID` | ✅ Yes | — | Your personal Discord user ID (enables owner-only commands) |
+| `BOT_NAME` | No | `Vanguard` | Display name used in embeds and footers |
+| `SUPPORT_SERVER_ID` | No | — | Guild ID where internal error logs are sent |
+| `SUPPORT_SERVER_LINK` | No | `https://discord.gg/3TJEacm6RD` | Public invite link shown in bot responses |
+| `LOG_BANS_CHANNEL` | No | — | Channel ID for ban logs in the support server |
+| `LOG_KICKS_CHANNEL` | No | — | Channel ID for kick logs in the support server |
+| `LOG_WARNS_CHANNEL` | No | — | Channel ID for warn logs in the support server |
+| `LOG_TIMEOUTS_CHANNEL` | No | — | Channel ID for timeout logs in the support server |
+| `LOG_ERRORS_CHANNEL` | No | — | Channel ID for bot error logs in the support server |
+| `DATABASE_PATH` | No | `./vanguard.sqlite` | Relative path where the SQLite database is stored |
+| `DEFAULT_COOLDOWN` | No | `3` | Default command cooldown in seconds |
+
+> ⚠️ **Critical:** If `TOKEN` or `CLIENT_ID` are missing, the bot will immediately exit with a `[CRITICAL-FATAL]` error rather than entering an invalid state.
+
+---
+
+## ⚙️ In-Bot Configuration
+
+Once the bot is online, configure it in your server with slash commands:
+
+**Setting up a log channel:**
+```
+/config logs #mod-logs
+```
+
+**Customising emojis:**
+```
+/config emojis key:ban emoji:<:ban:1234567890>
+/config emojis key:success emoji:✅
+/config emojis key:error emoji:❌
+```
+
+Available emoji keys: `success`, `error`, `ban`, `kick`, `warn`, `timeout`, `unban`
+
+---
+
 ## 🛠️ Diagnostics & Troubleshooting
 
-Vanguard provides verbose deployment logging. If you run into issues, consult the list below:
-
-* `[ERROR] CLIENT_ID is missing from environment variables.`
-  * **Fix:** The bot requires your Discord Application ID to register the Slash Commands with the global API. Add `CLIENT_ID` to your `.env` and restart.
-* `Failed to log to guild... Missing Log Permissions.`
-  * **Fix:** Ensure the Bot has been granted `Send Messages`, `View Channel`, and `Embed Links` in whatever `#log` channel you selected via `/config logs`.
-* The server configuration isn't updating correctly or commands say "Interaction Failed".
-  * **Fix:** You may be suffering an extreme momentary Discord API Outage. Thanks to Vanguard's Smart Interaction recovery, simply try the command again.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `[CRITICAL-FATAL] Missing TOKEN or CLIENT_ID` | Environment variables not set | Add `TOKEN` and `CLIENT_ID` to your `.env` file |
+| `[ERROR] CLIENT_ID is missing` | `CLIENT_ID` present in `.env` but not parsed | Check for typos or invisible characters in your `.env` |
+| Commands not showing in Discord | Slash commands failed to register | Ensure `CLIENT_ID` is correct and the bot has `applications.commands` scope |
+| `Failed to log to guild` | Bot missing channel permissions | Grant the bot `View Channel`, `Send Messages`, and `Embed Links` in the log channel |
+| Embeds missing emojis | Custom emoji not from a shared server | Ensure the bot is in the server that owns the emoji |
+| `Interaction Failed` on command | Interaction token expired (>3s) | Commands use `deferReply()` — if still seeing this, check for unhandled errors in the console |
 
 ---
 
-## 🤝 Support & Socials
+## 🤝 Support
 
 <div align="left">
-  <a href="https://discord.gg/3TJEacm6RD">
-    <img src="https://img.shields.io/badge/Discord-Support-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord Support">
-  </a>
-  <a href="https://www.instagram.com/http.sejed.official/">
-    <img src="https://img.shields.io/badge/Instagram-Follow-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram">
-  </a>
+
+[![Discord Support](https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/3TJEacm6RD)
+[![Instagram](https://img.shields.io/badge/Instagram-Follow-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/http.sejed.official/)
+
 </div>
 
-- **Support Server**: [Join Vanguard Headquarters](https://discord.gg/3TJEacm6RD)
-- **Developer Origin**: sejed
+- 🐛 **Bug Reports** — [Open an Issue](https://github.com/SEJED-DEV/Vanguard-discord-bot/issues)
+- 💬 **Live Help** — [Join the Support Server](https://discord.gg/3TJEacm6RD)
+- 👨‍💻 **Developer** — sejed
 
 ---
 
-## 📄 License & Legal
+## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for complete distribution constraints and warranty limitations.
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for full details.
 
 ---
 
-<p align="center">
-  Engineered with ❤️ by Sejed TRABELSSI
-</p>
+<div align="center">
+
+Engineered with ❤️ by **Sejed TRABELSSI**
+
+</div>
