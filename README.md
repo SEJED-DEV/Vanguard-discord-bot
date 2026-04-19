@@ -33,6 +33,9 @@ Internal monitoring logs (for developers) are strictly isolated from guild-local
 ### 🚀 Smart Interaction Handling
 Vanguard uses an advanced interaction recovery system that handles expired tokens and provides fallback responses to prevent "ghosting" when commands fail.
 
+### 🛡️ Fail-Safe Resilience
+Complete with strict environment parameter validation, native API outage `try/catch` fallbacks, and exact Discord hierarchy synchronization, Vanguard prevents erratic ghost-punishments and zombie processes entirely.
+
 ---
 
 ## 🛠️ Configuration
@@ -96,7 +99,7 @@ Use the `/config` command suite to manage your server:
 </div>
 
 - **Support Server**: [Join our Community](https://discord.gg/3TJEacm6RD)
-- **Developer**: seJed
+- **Developer**: sejed
 
 ---
 
@@ -107,5 +110,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <p align="center">
-  Made with ❤️ by the Vanguard Team
+  Made with ❤️ by Sejed TRABELSSI
 </p>

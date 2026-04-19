@@ -36,6 +36,11 @@ module.exports = {
             });
         }
 
+        // Explicit Bot Permission Check before proceeding
+        if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ModerateMembers)) {
+            return interaction.editReply({ content: `${emojis.get('error', interaction.guildId)} I lack the \`Moderate Members\` permission to execute this action.` });
+        }
+
         try {
             // Attempt DM BEFORE Timeout
             await mod.sendDM(targetUser, interaction.guild, 'TIMED OUT', reason, durationStr);

@@ -38,6 +38,11 @@ module.exports = {
             }
         }
 
+        // Explicit Bot Permission Check before proceeding
+        if (!guild.members.me.permissions.has(PermissionFlagsBits.BanMembers)) {
+            return interaction.editReply({ content: `${emojis.get('error', interaction.guildId)} I lack the \`Ban Members\` permission to execute this action.` });
+        }
+
         try {
             // Attempt DM BEFORE Ban
             await mod.sendDM(target, guild, 'BANNED', reason);

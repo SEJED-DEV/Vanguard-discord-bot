@@ -82,21 +82,27 @@ class Logger {
      * Log an error or break.
      */
     async logError(error, context) {
-        // Truncate stack trace to ensure it fits within Discord's 2000 character limit
-        const errorStack = (error.stack || error).toString();
-        const truncatedStack = errorStack.length > 1500 
-            ? errorStack.substring(0, 1497) + '...' 
-            : errorStack;
+        try {
+            // Truncate stack trace to ensure it fits within Discord's 2000 character limit
+            const errorStack = (error.stack || error).toString();
+            const truncatedStack = errorStack.length > 1500 
+                ? errorStack.substring(0, 1497) + '...' 
+                : errorStack;
 
-        const embed = new EmbedBuilder()
-            .setTitle('Bot Error/Exception')
-            .setDescription(`\`\`\`js\n${truncatedStack}\n\`\`\``)
-            .addFields({ name: 'Context', value: context || 'No context' })
-            .setTimestamp()
-            .setColor(config.colors.error)
-            .setFooter({ text: `${config.botName} System Diagnostics` });
+            const embed = new EmbedBuilder()
+                .setTitle('Bot Error/Exception')
+                .setDescription(`\`\`\`js\n${truncatedStack}\n\`\`\``)
+                .addFields({ name: 'Context', value: context || 'No context' })
+                .setTimestamp()
+                .setColor(config.colors.error)
+                .setFooter({ text: `${config.botName} System Diagnostics` });
 
-        await this.logAction('ERROR', embed);
+            await this.logAction('ERROR', embed);
+        } catch (fatalError) {
+            console.error('[FATAL FALLBACK] Failed to send error to Discord Log Channel. Raw exception below:');
+            console.error('Original Error:', error);
+            console.error('Logger Failure:', fatalError);
+        }
     }
 
     getActionColor(action) {

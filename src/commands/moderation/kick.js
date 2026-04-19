@@ -33,6 +33,11 @@ module.exports = {
             });
         }
 
+        // Explicit Bot Permission Check before proceeding
+        if (!guild.members.me.permissions.has(PermissionFlagsBits.KickMembers)) {
+            return interaction.editReply({ content: `${emojis.get('error', interaction.guildId)} I lack the \`Kick Members\` permission to execute this action.` });
+        }
+
         try {
             // Attempt DM BEFORE Kick
             await mod.sendDM(targetUser, guild, 'KICKED', reason);

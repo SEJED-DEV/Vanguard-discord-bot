@@ -1,7 +1,14 @@
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, Events } = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
 require('dotenv').config();
+
+// Strict Initialization Validation
+if (!process.env.TOKEN || !process.env.CLIENT_ID) {
+    console.error('[CRITICAL-FATAL] Missing TOKEN or CLIENT_ID in environment variables. Aborting boot sequence.');
+    process.exit(1);
+}
+
 const config = require('./config');
 
 const client = new Client({
@@ -101,7 +108,7 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
-client.once('ready', () => {
+client.once(Events.ClientReady, () => {
     console.log(`${config.botName} Online | Logged in as ${client.user.tag}`);
 });
 

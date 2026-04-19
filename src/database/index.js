@@ -54,7 +54,12 @@ const dbHandler = {
     getGuildConfig: (guildId) => {
         try {
             // Check Cache
-            if (configCache.has(guildId)) return configCache.get(guildId);
+            if (configCache.has(guildId)) {
+                const cachedData = configCache.get(guildId);
+                configCache.delete(guildId);
+                configCache.set(guildId, cachedData);
+                return cachedData;
+            }
 
             const stmt = db.prepare('SELECT * FROM guild_configs WHERE guildId = ?');
             const result = stmt.get(guildId);
