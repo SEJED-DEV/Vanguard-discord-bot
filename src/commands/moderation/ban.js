@@ -23,17 +23,17 @@ module.exports = {
         // Check if user is already banned
         const existingBan = await guild.bans.fetch(target.id).catch(() => null);
         if (existingBan) {
-            return interaction.editReply({ content: `${emojis.get('error')} **${target.tag}** is already banned from this server.` });
+            return interaction.editReply({ content: `${emojis.get('error', interaction.guildId)} **${target.tag}** is already banned from this server.` });
         }
 
         // Permission Checks
         if (member) {
             if (member.roles.highest.position >= interaction.member.roles.highest.position && interaction.user.id !== interaction.guild.ownerId) {
-                return interaction.editReply({ content: `${emojis.get('error')} You cannot ban someone with a role higher or equal to yours.` });
+                return interaction.editReply({ content: `${emojis.get('error', interaction.guildId)} You cannot ban someone with a role higher or equal to yours.` });
             }
             if (!member.bannable) {
                 return interaction.editReply({ 
-                    content: `${emojis.get('error')} I cannot ban this user. They might have a higher role than me or are the server owner.`, 
+                    content: `${emojis.get('error', interaction.guildId)} I cannot ban this user. They might have a higher role than me or are the server owner.`, 
                 });
             }
         }
@@ -50,7 +50,7 @@ module.exports = {
 
             // Create Success Embed
             const successEmbed = new EmbedBuilder()
-                .setTitle(`${emojis.get('ban')} User Banned`)
+                .setTitle(`${emojis.get('ban', interaction.guildId)} User Banned`)
                 .setDescription(`**${target.tag}** has been banned from the server.`)
                 .addFields(
                     { name: 'Reason', value: reason, inline: true },
@@ -70,7 +70,7 @@ module.exports = {
         } catch (error) {
             console.error(error);
             await interaction.editReply({ 
-                content: `${emojis.get('error')} Failed to ban the user. Check my permissions or if the user is already gone.`, 
+                content: `${emojis.get('error', interaction.guildId)} Failed to ban the user. Check my permissions or if the user is already gone.`, 
             });
         }
     },

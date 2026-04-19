@@ -24,10 +24,10 @@ module.exports = {
         // We can also include the bot's thumbnail if available
         try {
             await interaction.channel.send({ embeds: [embed] });
-            await interaction.reply({ content: `${emojis.get('success')} Message sent!`, ephemeral: true });
+            await interaction.reply({ content: `${emojis.get('success', interaction.guildId)} Message sent!`, ephemeral: true });
         } catch (error) {
             console.error(error);
-            await interaction.reply({ content: `${emojis.get('error')} Failed to send message.`, ephemeral: true });
+            await interaction.reply({ content: `${emojis.get('error', interaction.guildId)} Failed to send message.`, ephemeral: true });
         }
     },
 };

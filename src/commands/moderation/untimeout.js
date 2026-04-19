@@ -16,7 +16,7 @@ module.exports = {
         const member = await interaction.guild.members.fetch(targetUser.id).catch(() => null);
 
         if (!member) {
-            return interaction.reply({ content: `${emojis.get('error')} User not found in this server.`, ephemeral: true });
+            return interaction.reply({ content: `${emojis.get('error', interaction.guildId)} User not found in this server.`, ephemeral: true });
         }
 
         try {
@@ -25,7 +25,7 @@ module.exports = {
             const newCase = await mod.createCase(interaction.guild.id, targetUser.id, interaction.user.id, 'UNTIMEOUT', reason);
 
             const successEmbed = new EmbedBuilder()
-                .setTitle(`${emojis.get('success')} Timeout Removed`)
+                .setTitle(`${emojis.get('success', interaction.guildId)} Timeout Removed`)
                 .setDescription(`Timeout for **${targetUser.tag}** has been removed.`)
                 .addFields(
                     { name: 'Reason', value: reason, inline: true },
@@ -42,7 +42,7 @@ module.exports = {
 
         } catch (error) {
             console.error(error);
-            await interaction.reply({ content: `${emojis.get('error')} Failed to remove timeout. Check permissions.`, ephemeral: true });
+            await interaction.reply({ content: `${emojis.get('error', interaction.guildId)} Failed to remove timeout. Check permissions.`, ephemeral: true });
         }
     },
 };

@@ -40,6 +40,18 @@ fs.readdirSync(handlersPath).forEach(handlerFile => {
 
 // Interactions
 client.on('interactionCreate', async interaction => {
+    if (interaction.isAutocomplete()) {
+        const command = client.commands.get(interaction.commandName);
+        if (!command) return;
+
+        try {
+            await command.autocomplete(interaction);
+        } catch (error) {
+            console.error(error);
+        }
+        return;
+    }
+
     if (!interaction.isChatInputCommand()) return;
 
     const command = client.commands.get(interaction.commandName);
@@ -72,14 +84,19 @@ client.on('interactionCreate', async interaction => {
     try {
         await command.execute(interaction);
     } catch (error) {
-        console.error(error);
+        console.error(`[COMMAND ERROR] ${command.data.name}:`, error);
         await loggerRef.logError(error, `Command Execution: ${command.data.name}`);
         
         const errorMsg = 'There was an error while executing this command!';
-        if (interaction.replied || interaction.deferred) {
-            await interaction.followUp({ content: errorMsg, ephemeral: true }).catch(() => null);
-        } else {
-            await interaction.reply({ content: errorMsg, ephemeral: true }).catch(() => null);
+        
+        try {
+            if (interaction.replied || interaction.deferred) {
+                await interaction.followUp({ content: errorMsg, ephemeral: true });
+            } else if (interaction.isRepliable()) {
+                await interaction.reply({ content: errorMsg, ephemeral: true });
+            }
+        } catch (postError) {
+            console.error(`[CRITICAL] Failed to send error response to user:`, postError.message);
         }
     }
 });

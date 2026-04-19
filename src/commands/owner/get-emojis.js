@@ -15,7 +15,7 @@ module.exports = {
         }
 
         const requiredKeys = require('../../utils/emojis').REQUIRED_KEYS;
-        const emojiList = requiredKeys.map(key => `**${key}**: \`${emojis.get(key)}\``).join('\n');
+        const emojiList = requiredKeys.map(key => `**${key}**: \`${emojis.get(key, interaction.guildId)}\``).join('\n');
 
         const embed = new EmbedBuilder()
             .setTitle(`${config.botName} | Emoji Slots`)

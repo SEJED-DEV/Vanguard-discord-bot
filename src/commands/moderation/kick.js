@@ -20,16 +20,16 @@ module.exports = {
         const member = await guild.members.fetch(targetUser.id).catch(() => null);
 
         if (!member) {
-            return interaction.editReply({ content: `${emojis.get('error')} User is not in this server.` });
+            return interaction.editReply({ content: `${emojis.get('error', interaction.guildId)} User is not in this server.` });
         }
 
         if (member.roles.highest.position >= interaction.member.roles.highest.position && interaction.user.id !== interaction.guild.ownerId) {
-            return interaction.editReply({ content: `${emojis.get('error')} You cannot kick someone with a role higher or equal to yours.` });
+            return interaction.editReply({ content: `${emojis.get('error', interaction.guildId)} You cannot kick someone with a role higher or equal to yours.` });
         }
 
         if (!member.kickable) {
             return interaction.editReply({ 
-                content: `${emojis.get('error')} I cannot kick this user. Hierarchical permissions issue.`, 
+                    content: `${emojis.get('error', interaction.guildId)} I cannot kick this user. Hierarchical permissions issue.`, 
             });
         }
 
@@ -42,7 +42,7 @@ module.exports = {
             const newCase = await mod.createCase(guild.id, targetUser.id, interaction.user.id, 'KICK', reason);
 
             const successEmbed = new EmbedBuilder()
-                .setTitle(`${emojis.get('kick')} User Kicked`)
+                .setTitle(`${emojis.get('kick', interaction.guildId)} User Kicked`)
                 .setDescription(`**${targetUser.tag}** has been kicked.`)
                 .addFields(
                     { name: 'Reason', value: reason, inline: true },
@@ -59,7 +59,7 @@ module.exports = {
 
         } catch (error) {
             console.error(error);
-            await interaction.editReply({ content: `${emojis.get('error')} Failed to kick the user.` });
+            await interaction.editReply({ content: `${emojis.get('error', interaction.guildId)} Failed to kick the user.` });
         }
     },
 };

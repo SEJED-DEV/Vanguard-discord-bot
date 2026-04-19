@@ -18,7 +18,7 @@ module.exports = {
             const newCase = await mod.createCase(interaction.guild.id, target.id, interaction.user.id, 'UNWARN', reason);
 
             const successEmbed = new EmbedBuilder()
-                .setTitle(`${emojis.get('success')} Warnings Cleared`)
+                .setTitle(`${emojis.get('success', interaction.guildId)} Warnings Cleared`)
                 .setDescription(`**${target.tag}** has been unwarned.`)
                 .addFields(
                     { name: 'Reason', value: reason, inline: true },
@@ -35,7 +35,7 @@ module.exports = {
 
         } catch (error) {
             console.error(error);
-            await interaction.reply({ content: `${emojis.get('error')} Failed to clear warnings.`, ephemeral: true });
+            await interaction.reply({ content: `${emojis.get('error', interaction.guildId)} Failed to clear warnings.`, ephemeral: true });
         }
     },
 };

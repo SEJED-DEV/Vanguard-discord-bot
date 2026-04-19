@@ -20,7 +20,7 @@ module.exports = {
             const newCase = await mod.createCase(interaction.guild.id, userId, interaction.user.id, 'UNBAN', reason);
 
             const successEmbed = new EmbedBuilder()
-                .setTitle(`${emojis.get('success')} User Unbanned`)
+                .setTitle(`${emojis.get('success', interaction.guildId)} User Unbanned`)
                 .setDescription(`User ID \`${userId}\` has been unbanned.`)
                 .addFields(
                     { name: 'Reason', value: reason, inline: true },
@@ -37,7 +37,7 @@ module.exports = {
 
         } catch (error) {
             console.error(error);
-            await interaction.reply({ content: `${emojis.get('error')} Failed to unban user. User may not be banned or ID is invalid.`, ephemeral: true });
+            await interaction.reply({ content: `${emojis.get('error', interaction.guildId)} Failed to unban user. User may not be banned or ID is invalid.`, ephemeral: true });
         }
     },
 };

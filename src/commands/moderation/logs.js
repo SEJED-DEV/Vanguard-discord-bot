@@ -14,11 +14,11 @@ module.exports = {
         const cases = db.getUserCases(interaction.guild.id, target.id);
 
         if (cases.length === 0) {
-            return interaction.reply({ content: `${emojis.get('info')} No moderation cases found for **${target.tag}**.`, ephemeral: true });
+            return interaction.reply({ content: `${emojis.get('info', interaction.guildId)} No moderation cases found for **${target.tag}**.`, ephemeral: true });
         }
 
         const embed = new EmbedBuilder()
-            .setTitle(`${emojis.get('logs')} Moderation History | ${target.tag}`)
+            .setTitle(`${emojis.get('logs', interaction.guildId)} Moderation History | ${target.tag}`)
             .setColor(config.colors.info)
             .setThumbnail(target.displayAvatarURL())
             .setTimestamp()

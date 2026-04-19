@@ -4,8 +4,18 @@ const config = require('../config');
 
 const db = new Database(path.join(process.cwd(), config.defaults.databasePath));
 
-// In-Memory Cache for Guild Configs
+// In-Memory Cache for Guild Configs with a basic size limit (Simple LRU)
+const cacheSizeLimit = 1000;
 const configCache = new Map();
+
+function setCachedConfig(guildId, data) {
+    if (configCache.size >= cacheSizeLimit) {
+        // Remove first entry (oldest) if limit reached
+        const firstKey = configCache.keys().next().value;
+        configCache.delete(firstKey);
+    }
+    configCache.set(guildId, data);
+}
 
 // Create Tables
 db.exec(`
@@ -16,7 +26,7 @@ db.exec(`
         modRoles TEXT,
         mutedRoleId TEXT,
         autoModEnabled INTEGER DEFAULT 0,
-        emojiMapping TEXT,
+        emojiMapping TEXT DEFAULT '{}',
         premium INTEGER DEFAULT 0
     );
 
@@ -49,7 +59,13 @@ const dbHandler = {
             const stmt = db.prepare('SELECT * FROM guild_configs WHERE guildId = ?');
             const result = stmt.get(guildId);
             
-            if (result) configCache.set(guildId, result);
+            if (result) {
+                // Parse emojiMapping if it's a string
+                if (typeof result.emojiMapping === 'string') {
+                    try { result.emojiMapping = JSON.parse(result.emojiMapping); } catch { result.emojiMapping = {}; }
+                }
+                setCachedConfig(guildId, result);
+            }
             return result;
         } catch (error) {
             console.error(`Database Error (getGuildConfig):`, error);
@@ -57,13 +73,20 @@ const dbHandler = {
         }
     },
     updateGuildConfigField: (guildId, field, value) => {
+        // Security: Whitelist allowed fields to prevent SQL injection
+        const allowedFields = ['logChannelId', 'adminRoles', 'modRoles', 'mutedRoleId', 'autoModEnabled', 'emojiMapping', 'premium'];
+        if (!allowedFields.includes(field)) {
+            console.error(`Security Warning: Unauthorized field update attempt: ${field}`);
+            return null;
+        }
+
         try {
             const stmt = db.prepare(`
                 INSERT INTO guild_configs (guildId, ${field})
                 VALUES (?, ?)
                 ON CONFLICT(guildId) DO UPDATE SET ${field} = excluded.${field}
             `);
-            const result = stmt.run(guildId, value);
+            const result = stmt.run(guildId, typeof value === 'object' ? JSON.stringify(value) : value);
             
             // Invalidate Cache
             configCache.delete(guildId);
@@ -76,6 +99,9 @@ const dbHandler = {
     updateGuildConfig: (guildId, data) => {
         try {
             const { logChannelId, adminRoles, modRoles, mutedRoleId, autoModEnabled, emojiMapping, premium } = data;
+            
+            const mappingString = typeof emojiMapping === 'object' ? JSON.stringify(emojiMapping) : (emojiMapping || '{}');
+
             const stmt = db.prepare(`
                 INSERT INTO guild_configs (guildId, logChannelId, adminRoles, modRoles, mutedRoleId, autoModEnabled, emojiMapping, premium)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -88,7 +114,7 @@ const dbHandler = {
                     emojiMapping = excluded.emojiMapping,
                     premium = excluded.premium
             `);
-            const result = stmt.run(guildId, logChannelId, adminRoles, modRoles, mutedRoleId, autoModEnabled, emojiMapping, premium);
+            const result = stmt.run(guildId, logChannelId, adminRoles, modRoles, mutedRoleId, autoModEnabled, mappingString, premium);
             
             // Invalidate Cache
             configCache.delete(guildId);
@@ -98,6 +124,7 @@ const dbHandler = {
             return null;
         }
     },
+
 
     // Cases
     createCase: (guildId, userId, moderatorId, type, reason, duration = null) => {

@@ -1,13 +1,10 @@
+const db = require('../database/index');
+
 /**
  * Emoji management utility.
- * Maps human-readable keys to custom emoji IDs.
+ * Maps human-readable keys to custom emoji IDs per-guild.
  */
 class EmojiManager {
-    constructor() {
-        // This will be populated from the configuration/database
-        this.emojis = {};
-    }
-
     /**
      * Required emoji keys for the bot's branding.
      */
@@ -30,20 +27,18 @@ class EmojiManager {
     }
 
     /**
-     * Map a key to a specific emoji string/ID.
-     * @param {Object} mapping - Object containing key: id/string
-     */
-    setup(mapping) {
-        this.emojis = mapping;
-    }
-
-    /**
      * Returns the emoji for a key or a fallback.
      * @param {string} key 
+     * @param {string} [guildId]
      * @returns {string}
      */
-    get(key) {
-        return this.emojis[key] || `[${key.toUpperCase()}]`;
+    get(key, guildId = null) {
+        if (!guildId) return `[${key.toUpperCase()}]`;
+
+        const config = db.getGuildConfig(guildId);
+        const mapping = config?.emojiMapping || {};
+
+        return mapping[key] || `[${key.toUpperCase()}]`;
     }
 }
 

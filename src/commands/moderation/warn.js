@@ -24,7 +24,7 @@ module.exports = {
             await mod.sendDM(target, interaction.guild, `WARNED (Case #${newCase.caseNumber})`, reason);
 
             const successEmbed = new EmbedBuilder()
-                .setTitle(`${emojis.get('warn')} User Warned`)
+                .setTitle(`${emojis.get('warn', interaction.guildId)} User Warned`)
                 .setDescription(`**${target.tag}** has been warned.`)
                 .addFields(
                     { name: 'Reason', value: reason, inline: true },
@@ -41,7 +41,7 @@ module.exports = {
 
         } catch (error) {
             console.error(error);
-            await interaction.editReply({ content: `${emojis.get('error')} Failed to issue warning.` });
+            await interaction.editReply({ content: `${emojis.get('error', interaction.guildId)} Failed to issue warning.` });
         }
     },
 };

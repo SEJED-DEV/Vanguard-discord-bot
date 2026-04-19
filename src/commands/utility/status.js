@@ -15,7 +15,7 @@ module.exports = {
         const minutes = Math.floor((uptime % 3600) / 60);
 
         const embed = new EmbedBuilder()
-            .setTitle(`${emojis.get('status_online')} ${config.botName} Status`)
+            .setTitle(`${emojis.get('status_online', interaction.guildId)} ${config.botName} Status`)
             .addFields(
                 { name: 'Shard', value: `\`${shardId}\``, inline: true },
                 { name: 'Uptime', value: `\`${hours}h ${minutes}m\``, inline: true },
