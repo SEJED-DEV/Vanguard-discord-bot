@@ -2,8 +2,8 @@
 
 <div align="center">  
   [![Discord Support](https://img.shields.io/badge/Discord-Support-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/3TJEacm6RD)
-  [![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge)](https://github.com/TSSEJED/Vanguard-discord-bot)
-  [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://github.com/TSSEJED/Vanguard-discord-bot/blob/main/LICENSE)
+  [![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge)](https://github.com/SEJED-DEV/Vanguard-discord-bot)
+  [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://github.com/SEJED-DEV/Vanguard-discord-bot/blob/main/LICENSE)
 </div>
 
 ---
@@ -61,7 +61,7 @@ Use the `/config` command suite to manage your server:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/TSSEJED/Vanguard-discord-bot.git
+   git clone https://github.com/SEJED-DEV/Vanguard-discord-bot.git
    cd Vanguard-discord-bot
    ```
 
